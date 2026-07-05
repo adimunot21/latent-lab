@@ -21,19 +21,19 @@ We build a browser playground for JEPA world models. Pipeline: custom **Two Room
 ## Phase 0 — Environment & Repo Setup
 Goal: a clean scaffold with green CI and nothing else.
 
-- [ ] Confirm project name availability (`latent-lab`) on GitHub before first commit
-- [ ] Create monorepo structure (see `CLAUDE.md` layout) with `mkdir -p`; show final tree
-- [ ] `training/`: init `uv` project, add torch (CUDA build for local 1650), numpy, onnx, onnxruntime, huggingface_hub, pytest, ruff, mypy, tensorboard (or wandb). Pin versions.
-- [ ] `web/`: init Vite + Svelte + TypeScript (strict), add onnxruntime-web, vitest, playwright, eslint, prettier
-- [ ] `.gitignore` (Python + Node + data/weights/artifacts), `.env.example`, `LICENSE` (Apache-2.0), `README.md` stub
-- [ ] `.pre-commit-config.yaml`: ruff, ruff-format, mypy, eslint, prettier
-- [ ] `.github/workflows/`: `python.yml` (sync/lint/type/test), `web.yml` (ci/lint/build/test), `deploy.yml` (stub, disabled)
-- [ ] `git init`, initial commit. **Remind human to create GitHub repo on github.com first**, then `git remote add origin` + push.
+- [x] Confirm project name availability (`latent-lab`) on GitHub before first commit
+- [x] Create monorepo structure (see `CLAUDE.md` layout) with `mkdir -p`; show final tree
+- [x] `training/`: init `uv` project, add torch (CUDA build for local 1650), numpy, onnx, onnxruntime, huggingface_hub, pytest, ruff, mypy, tensorboard (or wandb). Pin versions.
+- [x] `web/`: init Vite + Svelte + TypeScript (strict), add onnxruntime-web, vitest, playwright, eslint, prettier
+- [x] `.gitignore` (Python + Node + data/weights/artifacts), `.env.example`, `LICENSE` (Apache-2.0), `README.md` stub
+- [x] `.pre-commit-config.yaml`: ruff, ruff-format, mypy, eslint, prettier
+- [x] `.github/workflows/`: `python.yml` (sync/lint/type/test), `web.yml` (ci/lint/build/test), `deploy.yml` (stub, disabled)
+- [x] `git init`, initial commit. **Remind human to create GitHub repo on github.com first**, then `git remote add origin` + push.
 
 **Acceptance:**
-- [ ] `uv run pytest` passes (one trivial test) and `uv run ruff check .` clean
-- [ ] `npm run build` and `npm run test` pass (one trivial test)
-- [ ] CI green on the initial commit
+- [x] `uv run pytest` passes (one trivial test) and `uv run ruff check .` clean
+- [x] `npm run build` and `npm run test` pass (one trivial test)
+- [x] CI green on the initial commit
 
 ## Phase 1 — Two Rooms Env + Data Generation (Python)
 Goal: a validated offline trajectory dataset.
