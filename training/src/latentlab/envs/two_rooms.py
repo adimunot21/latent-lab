@@ -91,12 +91,12 @@ class TwoRoomsEnv:
 
     def set_state(self, x: float, y: float) -> None:
         """Teleport the agent (used by planners/evals). Validates free space."""
-        if not self._is_free(x, y):
+        if not self.is_free(x, y):
             raise ValueError(f"state ({x}, {y}) collides with a wall or boundary")
         self._x = x
         self._y = y
 
-    def _is_free(self, x: float, y: float) -> bool:
+    def is_free(self, x: float, y: float) -> bool:
         r = self.config.agent_radius
         if not (r <= x <= 1.0 - r and r <= y <= 1.0 - r):
             return False
@@ -113,7 +113,7 @@ class TwoRoomsEnv:
         for _ in range(1000):
             x = float(self._rng.uniform(r, 1.0 - r))
             y = float(self._rng.uniform(r, 1.0 - r))
-            if self._is_free(x, y):
+            if self.is_free(x, y):
                 self._x = x
                 self._y = y
                 return self.state

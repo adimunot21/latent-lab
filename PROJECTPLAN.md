@@ -38,16 +38,16 @@ Goal: a clean scaffold with green CI and nothing else.
 ## Phase 1 — Two Rooms Env + Data Generation (Python)
 Goal: a validated offline trajectory dataset.
 
-- [ ] Implement `envs/two_rooms.py`: state = agent (x,y); action = (dx,dy) clamped; two rooms + wall with a doorway; `reset()`, `step(action)`, `render()` → 64×64 (grayscale or RGB) frame. Deterministic given seed.
-- [ ] Unit tests: wall collision blocks movement, doorway passable, determinism (same seed+actions → same trajectory), render shape/dtype/range
-- [ ] `data/generate.py`: rollout policy (mix of random + goal-directed) → ~50–100k transitions `(frame_t, action_t, frame_{t+1})` saved as sharded `.npz` (not git-tracked). Include state (x,y) alongside frames for probing.
-- [ ] **DATA-VALIDATION GATE:** `data/inspect.py` prints field names, shapes, dtypes, action min/max/mean, frame value range, and writes 2–3 sample transition PNGs to a scratch dir. Run it and confirm sane before any training code.
-- [ ] `data/dataset.py`: torch Dataset/DataLoader reading shards, with normalization stats computed and saved
+- [x] Implement `envs/two_rooms.py`: state = agent (x,y); action = (dx,dy) clamped; two rooms + wall with a doorway; `reset()`, `step(action)`, `render()` → 64×64 (grayscale or RGB) frame. Deterministic given seed.
+- [x] Unit tests: wall collision blocks movement, doorway passable, determinism (same seed+actions → same trajectory), render shape/dtype/range
+- [x] `data/generate.py`: rollout policy (mix of random + goal-directed) → ~50–100k transitions `(frame_t, action_t, frame_{t+1})` saved as sharded `.npz` (not git-tracked). Include state (x,y) alongside frames for probing. *(1000 eps × 60 steps = 60k transitions, `data/two_rooms_v1`, seed 0)*
+- [x] **DATA-VALIDATION GATE:** `data/inspect.py` prints field names, shapes, dtypes, action min/max/mean, frame value range, and writes 2–3 sample transition PNGs to a scratch dir. Run it and confirm sane before any training code. *(GATE PASSED: all invariants ok, 302 door crossings in shard 0, PNGs visually verified)*
+- [x] `data/dataset.py`: torch Dataset/DataLoader reading shards, with normalization stats computed and saved *(frame_mean=0.0314, frame_std=0.1366 over frames/255)*
 
 **Acceptance:**
-- [ ] Env unit tests pass
-- [ ] `inspect.py` output reviewed; frames look like the env; actions in expected range
-- [ ] DataLoader yields a batch with correct shapes/dtypes (printed)
+- [x] Env unit tests pass *(14 env tests + 4 pipeline tests)*
+- [x] `inspect.py` output reviewed; frames look like the env; actions in expected range *(±0.08, symmetric)*
+- [x] DataLoader yields a batch with correct shapes/dtypes (printed) *(frame (64,1,64,64) f32, action (64,2) f32)*
 
 ## Phase 2 — Train the JEPA World Model (Python)
 Goal: a model with useful representations + a deliberately collapsed counterpart.
