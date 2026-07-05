@@ -1,0 +1,37 @@
+name: web
+
+on:
+  push:
+    branches: [main]
+    paths: ["web/**", "shared/**", ".github/workflows/web.yml"]
+  pull_request:
+    paths: ["web/**", "shared/**", ".github/workflows/web.yml"]
+
+defaults:
+  run:
+    working-directory: web
+
+jobs:
+  lint-build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Lint (eslint + prettier)
+        run: npm run lint
+
+      - name: Build (svelte-check + vite build)
+        run: npm run build
+
+      - name: Unit tests (vitest)
+        run: npm run test
