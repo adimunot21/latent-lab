@@ -11,10 +11,10 @@ Read `CLAUDE.md` for how-to-work rules (data-validation gate, env parity, VRAM c
 We build a browser playground for JEPA world models. Pipeline: custom **Two Rooms** navigation env → offline trajectory dataset → **action-conditioned JEPA world model** (CNN encoder + predictor, next-embedding MSE + SIGReg anti-collapse loss, no EMA / no stop-gradient) → probes + **CEM latent planner** → **ONNX export** → **Hugging Face Hub** → **browser app** (onnxruntime-web, WebGPU + WASM fallback) that runs encoder/predictor/planner live and visualizes the latent space, planning, and representation collapse.
 
 **Definition of done (whole project):**
-- [ ] Two Rooms JEPA world model, ≥90% planning success in Python eval
-- [ ] ONNX export passing parity tests, hosted on HF Hub with model cards
-- [ ] Public static site: goal-drag planning + latent panel + collapse checkpoint switcher, working on WebGPU and WASM
-- [ ] Green CI (Python + Web + parity), README + `docs/` walkthrough
+- [x] Two Rooms JEPA world model, ≥90% planning success in Python eval *(97%)*
+- [x] ONNX export passing parity tests, hosted on HF Hub with model cards *(fp32 parity ~1e-6; adimunot/latent-lab @ dcb3b25d)*
+- [x] Public static site: goal-drag planning + latent panel + collapse checkpoint switcher, working on WebGPU and WASM *(https://adimunot21.github.io/latent-lab/ — WASM verified end-to-end everywhere incl. CI; WebGPU path ships and self-tests where the browser exposes an adapter, which Linux Chrome still flags behind chrome://flags)*
+- [x] Green CI (Python + Web + parity), README + `docs/` walkthrough
 
 ---
 
@@ -129,8 +129,8 @@ Goal: the actual product.
 - [x] Finalize HF model cards with the live-site link *(card-only Hub commit; model files remain at pinned revision dcb3b25d)*
 
 **Acceptance:**
-- [ ] Public URL works cold (fresh browser, no cache)
-- [ ] README + docs complete; CI (incl. deploy) green
+- [x] Public URL works cold (fresh browser, no cache) *(fresh Playwright context against https://adimunot21.github.io/latent-lab/: ready + cross-room plan succeeded in 7 steps. Note: first deploy failed with a generic Pages provisioning error; deleting + recreating the Pages site fixed it)*
+- [x] README + docs complete; CI (incl. deploy) green
 
 ## Phase 8 — Stretch: PushT Track (RunPod) — only if 0–7 shipped
 - [ ] PushT dataset gen (pymunk), larger model trained on RunPod
