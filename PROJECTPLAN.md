@@ -133,9 +133,14 @@ Goal: the actual product.
 - [x] README + docs complete; CI (incl. deploy) green
 
 ## Phase 8 — Stretch: PushT Track (RunPod) — only if 0–7 shipped
-- [ ] PushT dataset gen (pymunk), larger model trained on RunPod
-- [ ] Browser dynamics via planck.js or precomputed-dynamics approach
-- [ ] Decide scope at this point; do not start before Phase 7 ships
+**DECISION (2026-07-06): consciously descoped.** Phases 0–7 shipped and the
+project demonstrates the full JEPA story end-to-end; PushT would add scale
+credibility at ~2–3× the effort of any prior phase plus RunPod cost. If ever
+revisited, start with local pymunk dataset generation + a small-model
+feasibility probe on the GTX 1650 before committing cloud money.
+- [ ] ~~PushT dataset gen (pymunk), larger model trained on RunPod~~
+- [ ] ~~Browser dynamics via planck.js or precomputed-dynamics approach~~
+- [x] Decide scope at this point; do not start before Phase 7 ships
 
 ---
 
