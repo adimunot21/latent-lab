@@ -73,6 +73,15 @@ Two Rooms env ──► 60k-transition dataset       Two Rooms env (bit-exact po
 
 Full component walkthroughs live in [`docs/`](docs/01_architecture.md).
 
+## 📚 Learn it from scratch
+
+There's a full **[course](course/README.md)** in this repo: 13 lessons from
+"what is a world model" through the SIGReg math, the collapse experiments,
+the dense-cost planning lesson, ONNX parity, and the browser internals —
+with code walkthroughs and hands-on exercises per lesson (several designed
+to break things informatively). If you want to *understand* this project
+rather than just run it, start there.
+
 ## Repository layout
 
 ```
