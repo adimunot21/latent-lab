@@ -3,9 +3,9 @@ name: python
 on:
   push:
     branches: [main]
-    paths: ["training/**", ".github/workflows/python.yml"]
+    paths: ["training/**", "shared/**", ".github/workflows/python.yml"]
   pull_request:
-    paths: ["training/**", ".github/workflows/python.yml"]
+    paths: ["training/**", "shared/**", ".github/workflows/python.yml"]
 
 defaults:
   run:

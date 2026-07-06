@@ -95,16 +95,16 @@ Goal: portable, verified inference artifacts.
 ## Phase 5 — Browser Core (TypeScript)
 Goal: first visible in-browser wow moment.
 
-- [ ] `env/twoRooms.ts`: port of the Python env + canvas renderer
-- [ ] **ENV PARITY GATE:** generate shared trajectory fixtures in `shared/fixtures/` (fixed seed + action sequence + resulting states) from Python; test that TS reproduces them exactly. Gate the phase on this.
-- [ ] `inference/session.ts`: onnxruntime-web session with WebGPU detect → WASM fallback; warmup run; typed wrappers `encoder.ts`, `predictor.ts`
-- [ ] Load models from pinned HF revision + `manifest.json`; apply normalization from manifest
-- [ ] Wire arrow-key control: drive agent, encode current frame, show live latent PCA dot moving in a panel
+- [x] `env/twoRooms.ts`: port of the Python env + canvas renderer *(operation-for-operation mirror of the Python portability contract)*
+- [x] **ENV PARITY GATE:** generate shared trajectory fixtures in `shared/fixtures/` (fixed seed + action sequence + resulting states) from Python; test that TS reproduces them exactly. Gate the phase on this. *(9 cases / 181 states BIT-EXACT float64 + 3 frames BYTE-EXACT — frames added beyond plan because the browser encodes its own renders; both CIs gate on the fixture file)*
+- [x] `inference/session.ts`: onnxruntime-web session with WebGPU detect → WASM fallback; warmup run; typed wrappers `encoder.ts`, `predictor.ts`
+- [x] Load models from pinned HF revision + `manifest.json`; apply normalization from manifest *(sha256 integrity check on every artifact; pin lives in src/config.ts)*
+- [x] Wire arrow-key control: drive agent, encode current frame, show live latent PCA dot moving in a panel *(+ lookup-cloud backdrop from the manifest lookup table)*
 
 **Acceptance:**
-- [ ] Env parity test passes in web CI
-- [ ] Page loads models, shows WebGPU/WASM badge
-- [ ] Driving the agent moves the latent dot sensibly (screenshot/GIF)
+- [x] Env parity test passes in web CI *(tests/twoRooms.parity.test.ts, also guarded Python-side by tests/test_env_fixtures.py)*
+- [x] Page loads models, shows WebGPU/WASM badge *(headless check: WASM badge + ready; WebGPU path exercised in Phase 6 Playwright)*
+- [x] Driving the agent moves the latent dot sensibly (screenshot/GIF) *(docs/assets/phase5_latent_dot.png — trail follows the room's manifold sheet)*
 
 ## Phase 6 — Playground Features
 Goal: the actual product.
