@@ -48,3 +48,6 @@ export_out/
 .vscode/*
 !.vscode/extensions.json
 .idea/
+
+# ---- Claude Code session state ----
+.claude/
