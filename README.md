@@ -12,7 +12,11 @@ browser** via onnxruntime-web (WebGPU, with a first-class WASM fallback):
 encoder, predictor, a CEM planner in a Web Worker, and a latent-space
 visualization — no server, no decoder.
 
-![planning](docs/assets/phase6_planning.png)
+![demo: driving, latent planning, and representation collapse](docs/assets/demo.gif)
+
+*Recorded on the live site: arrow-key driving, click-to-plan through the
+doorway (orange = chosen plan, blue = candidates), then swapping to the
+no-regularizer checkpoint — watch the latent cloud collapse to a point.*
 
 ## What you can do in the demo
 
