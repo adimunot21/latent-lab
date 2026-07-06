@@ -35,3 +35,9 @@ jobs:
 
       - name: Unit tests (vitest)
         run: npm run test
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: E2E (WASM — fetches pinned models from HF CDN)
+        run: npx playwright test --project=chromium-wasm

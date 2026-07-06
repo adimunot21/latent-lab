@@ -60,6 +60,40 @@ export class LatentPanel {
     if (this.trail.length > this.maxTrail) this.trail.shift()
   }
 
+  clearTrail(): void {
+    this.trail = []
+  }
+
+  /**
+   * Replace the background cloud with latents from the CURRENT encoder
+   * (checkpoint switcher). The view box stays fixed to the healthy cloud's
+   * extent — that's what makes a collapsed cloud visibly shrink to a point
+   * instead of the view auto-zooming into its noise.
+   */
+  setCloud(latents: Float32Array): void {
+    const n = latents.length / this.latentDim
+    this.cloud = []
+    for (let i = 0; i < n; i++) {
+      this.cloud.push(this.project(latents.subarray(i * this.latentDim, (i + 1) * this.latentDim)))
+    }
+  }
+
+  /** Mean distance of cloud points from their centroid (collapse metric). */
+  cloudSpread(): number {
+    if (this.cloud.length === 0) return 0
+    let cx = 0
+    let cy = 0
+    for (const [x, y] of this.cloud) {
+      cx += x
+      cy += y
+    }
+    cx /= this.cloud.length
+    cy /= this.cloud.length
+    let total = 0
+    for (const [x, y] of this.cloud) total += Math.hypot(x - cx, y - cy)
+    return total / this.cloud.length
+  }
+
   private toCanvas(p: [number, number], w: number, h: number): [number, number] {
     const { lo, hi } = this.bounds
     return [((p[0] - lo[0]) / (hi[0] - lo[0])) * w, (1 - (p[1] - lo[1]) / (hi[1] - lo[1])) * h]
