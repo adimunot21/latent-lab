@@ -52,19 +52,19 @@ Goal: a validated offline trajectory dataset.
 ## Phase 2 — Train the JEPA World Model (Python)
 Goal: a model with useful representations + a deliberately collapsed counterpart.
 
-- [ ] `models/encoder.py`: small CNN (pixels → latent z, dim ~128–256). `models/predictor.py`: (z_t, a_t) → ẑ_{t+1} (MLP or small transformer).
-- [ ] `models/losses.py`: next-embedding MSE + **SIGReg** (isotropic-Gaussian regularizer; sketched/random-projection form). Single `lambda_reg` knob.
-- [ ] `train.py`: AMP, config-driven (yaml in `configs/`), TensorBoard/W&B logging. **End-to-end sanity check first** (one batch through every stage, print shapes/values) before the full run.
-- [ ] Built-in diagnostics logged every N steps: latent std + effective rank (collapse detector), k-step open-loop rollout MSE.
-- [ ] `probes/linear_probe.py`: frozen z → agent (x,y) linear regression; report R²/MSE. `probes/collapse_metrics.py`, `probes/rollout.py`.
-- [ ] Train the **healthy** model. Then train **ablation/collapse checkpoints**: `lambda_reg = 0` saved at a few epochs (early → collapsed), plus early/late healthy checkpoints. Save all under a versioned dir.
-- [ ] Confirm training fits in 4GB (report peak VRAM). If not: shrink model / grad-accum, note it.
+- [x] `models/encoder.py`: small CNN (pixels → latent z, dim ~128–256). `models/predictor.py`: (z_t, a_t) → ẑ_{t+1} (MLP or small transformer). *(GroupNorm CNN 0.91M → z∈R¹²⁸; residual MLP predictor 0.13M)*
+- [x] `models/losses.py`: next-embedding MSE + **SIGReg** (isotropic-Gaussian regularizer; sketched/random-projection form). Single `lambda_reg` knob. *(Epps–Pulley CF statistic on random 1-D projections)*
+- [x] `train.py`: AMP, config-driven (yaml in `configs/`), TensorBoard/W&B logging. **End-to-end sanity check first** (one batch through every stage, print shapes/values) before the full run. *(sanity stage built into every run; `--sanity-only` flag)*
+- [x] Built-in diagnostics logged every N steps: latent std + effective rank (collapse detector), k-step open-loop rollout MSE.
+- [x] `probes/linear_probe.py`: frozen z → agent (x,y) linear regression; report R²/MSE. `probes/collapse_metrics.py`, `probes/rollout.py`. *(+ probes/report.py comparison table)*
+- [x] Train the **healthy** model. Then train **ablation/collapse checkpoints**: `lambda_reg = 0` saved at a few epochs (early → collapsed), plus early/late healthy checkpoints. Save all under a versioned dir. *(checkpoints/two_rooms_v1/{healthy_v1,collapse_v1}/, ~6 min per run)*
+- [x] Confirm training fits in 4GB (report peak VRAM). If not: shrink model / grad-accum, note it. *(peak VRAM 0.41 GB)*
 
 **Acceptance:**
-- [ ] Healthy model: linear position probe R² above an agreed threshold (record it)
-- [ ] Collapse run: latent std/rank visibly collapse in logs (this is a *feature* — the checkpoint is a deliverable)
-- [ ] Rollout error is low for healthy, high for collapsed
-- [ ] Checkpoints saved with configs
+- [x] Healthy model: linear position probe R² above an agreed threshold (record it) *(R² = 0.9997 held-out; threshold 0.9)*
+- [x] Collapse run: latent std/rank visibly collapse in logs (this is a *feature* — the checkpoint is a deliverable) *(z_std 1.163 → 0.001, a 1000× amplitude collapse. Nuance recorded: eff_rank and probe R² are scale-invariant and stay deceptively moderate — std + downstream utility are the honest detectors)*
+- [x] Rollout error is low for healthy, high for collapsed *(8-step probed position error: 0.098 vs 0.290 world units; collapsed latent-MSE misleadingly ~0 — documented in probes/report.py)*
+- [x] Checkpoints saved with configs *(model+optimizer+config+step in each .pt, config.yaml per run dir)*
 
 ## Phase 3 — Latent Planning in Python
 Goal: solve navigation by planning in latent space.

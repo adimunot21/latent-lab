@@ -95,8 +95,12 @@ def main() -> None:
             f"{metrics['rollout_pos_err']:13.4f}"
         )
     print(
-        f"\n(roll_* at horizon {args.horizon}; pos_err in world units, 1.0 = room width; "
-        "collapsed models: R2~0, eff_rank~1, and roll_mse misleadingly small)"
+        f"\n(roll_* at horizon {args.horizon}; pos_err in world units, 1.0 = room width)"
+        "\nReading collapsed checkpoints: z_std ~0 is the collapse signature. Scale-"
+        "\ninvariant metrics stay deceptively healthy — R2 can stay moderate (microscopic"
+        "\nresiduals remain linearly decodable) and eff_rank high (residual noise is"
+        "\nisotropic). roll_mse is misleadingly tiny (everything maps to ~one point);"
+        "\nroll_pos_err and planning success are the honest utility metrics."
     )
 
 
