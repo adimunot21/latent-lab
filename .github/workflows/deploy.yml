@@ -1,18 +1,58 @@
 name: deploy
 
-# STUB — intentionally disabled until Phase 7.
-# Manual-trigger only (workflow_dispatch), so it never runs on push/PR. When the
-# app is ready to ship, this becomes the static-site deploy (Cloudflare Pages or
-# GitHub Pages): build web/, then publish web/dist. See PROJECTPLAN.md Phase 7.
+# Static-site deploy to GitHub Pages. The site is pure static assets — the
+# models come from the pinned Hugging Face revision at runtime, so a deploy
+# never touches model weights.
 
 on:
+  push:
+    branches: [main]
+    paths: ["web/**", "shared/**", ".github/workflows/deploy.yml"]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
     steps:
-      - name: Placeholder
-        run: |
-          echo "Deploy is not configured yet (Phase 7). See PROJECTPLAN.md."
-          echo "This stub exists so the workflow file is in place and greppable."
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: web/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

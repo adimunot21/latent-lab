@@ -122,11 +122,11 @@ Goal: the actual product.
 - [x] Works on both WebGPU and WASM (both tested in Playwright) *(WASM project is the always-on CI gate and passes; the WebGPU project exists and auto-skips where no adapter is exposed — headless Chromium in this sandbox and on CI runners exposes none. Verify visually in desktop Chrome: badge should read WEBGPU.)*
 
 ## Phase 7 — Polish, Deploy, Ship
-- [ ] Enable `deploy.yml` → Cloudflare Pages (or GH Pages); public URL
-- [ ] Model-loading UX: progress bar, service-worker caching, graceful errors
-- [ ] README: what it is, live link, GIFs, local dev, how to regenerate data / obtain weights
-- [ ] `docs/` walkthrough (see below), README links to it
-- [ ] Finalize HF model cards with the live-site link
+- [x] Enable `deploy.yml` → Cloudflare Pages (or GH Pages); public URL *(GitHub Pages via actions/deploy-pages, build_type=workflow: https://adimunot21.github.io/latent-lab/)*
+- [x] Model-loading UX: progress bar, service-worker caching, graceful errors *(streaming progress from manifest byte counts; sw.js cache-first on immutable pinned-revision URLs)*
+- [x] README: what it is, live link, GIFs, local dev, how to regenerate data / obtain weights
+- [x] `docs/` walkthrough (see below), README links to it *(docs/01–07 written)*
+- [x] Finalize HF model cards with the live-site link *(card-only Hub commit; model files remain at pinned revision dcb3b25d)*
 
 **Acceptance:**
 - [ ] Public URL works cold (fresh browser, no cache)

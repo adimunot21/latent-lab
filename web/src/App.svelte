@@ -22,6 +22,7 @@
 
   let status = $state<'loading' | 'ready' | 'error'>('loading')
   let statusDetail = $state('fetching manifest…')
+  let loadProgress = $state<number | null>(null) // 0..1 while downloading models
   let backend = $state<Backend | null>(null)
   let agentState = $state<[number, number]>([0.25, 0.5])
   let checkpointId = $state('healthy')
@@ -243,10 +244,19 @@
     status = 'loading'
     planEpoch++ // cancel any MPC loop
     planning = false
+    // Combined progress across both model files (manifest knows the sizes).
+    const totals = [entry.files.encoder.bytes, entry.files.predictor.bytes]
+    const loaded = [0, 0]
+    const report = (slot: number) => (bytes: number) => {
+      loaded[slot] = bytes
+      loadProgress = (loaded[0] + loaded[1]) / (totals[0] + totals[1])
+    }
+    loadProgress = 0
     const [encoderBuffer, predictorBuffer] = await Promise.all([
-      fetchVerified(entry.files.encoder),
-      fetchVerified(entry.files.predictor),
+      fetchVerified(entry.files.encoder, report(0)),
+      fetchVerified(entry.files.predictor, report(1)),
     ])
+    loadProgress = null
     statusDetail = `starting ${backend} sessions…`
     encoder = await EncoderSession.create(encoderBuffer, manifest!, backend!)
     planner?.terminate()
@@ -339,6 +349,11 @@
         <span class="badge" data-testid="latency-badge">plan {planLatencyMs.toFixed(0)} ms</span>
       {/if}
     </div>
+    {#if loadProgress !== null}
+      <div class="progress" data-testid="load-progress">
+        <div class="progress-fill" style="width: {(loadProgress * 100).toFixed(1)}%"></div>
+      </div>
+    {/if}
   </header>
 
   <section class="controls">
@@ -453,6 +468,19 @@
   .badge.status-error {
     background: #7f1d1d;
     color: #fecaca;
+  }
+  .progress {
+    margin-top: 0.5rem;
+    height: 4px;
+    max-width: 24rem;
+    background: #1f2937;
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: #60c8ff;
+    transition: width 0.15s ease;
   }
   .controls {
     display: flex;

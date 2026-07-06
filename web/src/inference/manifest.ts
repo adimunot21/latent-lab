@@ -47,13 +47,42 @@ export async function loadManifest(): Promise<Manifest> {
   return (await response.json()) as Manifest
 }
 
-/** Download a bundle file and verify its sha256 against the manifest entry. */
-export async function fetchVerified(entry: FileEntry): Promise<ArrayBuffer> {
+/**
+ * Download a bundle file, streaming progress via the manifest's byte count
+ * (Content-Length can be absent over the SW cache), and verify its sha256.
+ */
+export async function fetchVerified(
+  entry: FileEntry,
+  onProgress?: (loadedBytes: number, totalBytes: number) => void,
+): Promise<ArrayBuffer> {
   const response = await fetch(hubUrl(entry.path))
   if (!response.ok) {
     throw new Error(`fetch ${entry.path} failed: ${response.status}`)
   }
-  const buffer = await response.arrayBuffer()
+
+  let buffer: ArrayBuffer
+  if (onProgress && response.body) {
+    const reader = response.body.getReader()
+    const bytes = new Uint8Array(entry.bytes)
+    let offset = 0
+    for (;;) {
+      const { done, value } = await reader.read()
+      if (done) break
+      if (offset + value.length > bytes.length) {
+        throw new Error(`fetch ${entry.path}: larger than manifest says (${entry.bytes} bytes)`)
+      }
+      bytes.set(value, offset)
+      offset += value.length
+      onProgress(offset, entry.bytes)
+    }
+    if (offset !== entry.bytes) {
+      throw new Error(`fetch ${entry.path}: got ${offset} bytes, manifest says ${entry.bytes}`)
+    }
+    buffer = bytes.buffer
+  } else {
+    buffer = await response.arrayBuffer()
+  }
+
   const digest = await crypto.subtle.digest('SHA-256', buffer)
   const hex = [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, '0')).join('')
   if (hex !== entry.sha256) {

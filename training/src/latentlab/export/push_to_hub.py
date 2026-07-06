@@ -41,6 +41,9 @@ WebGPU/WASM). Part of [latent-lab](https://github.com/adimunot21/latent-lab),
 an interactive playground for understanding JEPA world models and latent
 planning.
 
+**▶ Live demo (these exact weights, running in your browser):
+https://adimunot21.github.io/latent-lab/**
+
 ## What's here
 
 - `models/<id>/encoder.onnx` — CNN encoder: 64x64 grayscale frame -> 128-d latent (0.91M params)
