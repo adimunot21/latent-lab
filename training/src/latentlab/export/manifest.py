@@ -144,7 +144,7 @@ def build_bundle(
             "compounds over rollouts. Prefer fp32 predictor (0.53 MB); int8 encoder ok."
         ),
         "parity": parity_report or {},
-        "hf": {"repo_id": "adimunot21/latent-lab", "revision": None},
+        "hf": {"repo_id": "adimunot/latent-lab", "revision": None},
     }
     (out_dir / "manifest.json").write_text(json.dumps(manifest, indent=2))
     total = sum(f.stat().st_size for f in out_dir.rglob("*") if f.is_file())

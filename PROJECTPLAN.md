@@ -82,15 +82,15 @@ Goal: solve navigation by planning in latent space.
 ## Phase 4 — ONNX Export + Parity
 Goal: portable, verified inference artifacts.
 
-- [ ] `export/to_onnx.py`: export `encoder.onnx` and `predictor.onnx` with **dynamic batch dim** (planner batches candidates). Also emit int8-quantized variants.
-- [ ] `export/manifest.py`: `manifest.json` = latent dim, input normalization stats, PCA matrix, env config, checkpoint list + labels, HF revision placeholder
-- [ ] `export/parity_test.py`: identical inputs through PyTorch vs onnxruntime → max abs diff < 1e-4 (fp32); record quantized error too. Wire into CI.
-- [ ] Push models + `manifest.json` to Hugging Face Hub with **model cards** (what/how trained/limitations); note the pinned commit hash
+- [x] `export/to_onnx.py`: export `encoder.onnx` and `predictor.onnx` with **dynamic batch dim** (planner batches candidates). Also emit int8-quantized variants. *(opset 17; all 4 demo checkpoints; fp32 3.66+0.53 MB, int8 0.94+0.14 MB)*
+- [x] `export/manifest.py`: `manifest.json` = latent dim, input normalization stats, PCA matrix, env config, checkpoint list + labels, HF revision placeholder *(+ per-file sha256, lookup table as float32-LE .bin; 22.6 MB bundle)*
+- [x] `export/parity_test.py`: identical inputs through PyTorch vs onnxruntime → max abs diff < 1e-4 (fp32); record quantized error too. Wire into CI. *(CI runs on random-weight models; real artifacts: fp32 ~1e-6)*
+- [x] Push models + `manifest.json` to Hugging Face Hub with **model cards** (what/how trained/limitations); note the pinned commit hash *(https://huggingface.co/adimunot/latent-lab — NOTE: HF username is `adimunot`, not adimunot21 — pinned revision `dcb3b25d238556f0ef20ae3b6e128211ff519cc6`)*
 
 **Acceptance:**
-- [ ] Parity test passes in CI
-- [ ] Models load from a pinned HF revision via a throwaway script
-- [ ] Quantized-vs-fp32 error recorded and acceptable
+- [x] Parity test passes in CI *(tests/test_onnx_parity.py: fp32 gate + dynamic-batch test)*
+- [x] Models load from a pinned HF revision via a throwaway script *(manifest + encoder fetched at dcb3b25d, sha256 verified, ort inference ok)*
+- [x] Quantized-vs-fp32 error recorded and acceptable *(encoder int8 0.034 ok; predictor int8 0.24 compounds over rollouts → manifest says prefer fp32 predictor, 0.53 MB)*
 
 ## Phase 5 — Browser Core (TypeScript)
 Goal: first visible in-browser wow moment.

@@ -86,7 +86,7 @@ stats in `manifest.json`.
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--bundle", type=Path, required=True)
-    parser.add_argument("--repo-id", default="adimunot21/latent-lab")
+    parser.add_argument("--repo-id", default="adimunot/latent-lab")
     args = parser.parse_args()
 
     token = os.environ.get("HF_TOKEN")
