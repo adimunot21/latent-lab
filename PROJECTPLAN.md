@@ -69,15 +69,15 @@ Goal: a model with useful representations + a deliberately collapsed counterpart
 ## Phase 3 — Latent Planning in Python
 Goal: solve navigation by planning in latent space.
 
-- [ ] `planning/cem.py`: CEM over action sequences; cost = latent distance between predicted rollout end-state and encoded goal frame; horizon/population/iterations configurable
-- [ ] `planning/evaluate.py`: N random (start, goal) episodes → success rate + steps-to-goal; save planning GIFs
-- [ ] Build + save the **latent↔state lookup table** and **PCA projection matrix** (from a latent sample) for the browser's decoder-free visualization
-- [ ] Sanity-check the lookup/PCA visually (does a latent trajectory map to a sensible path?)
+- [x] `planning/cem.py`: CEM over action sequences; cost = latent distance between predicted rollout end-state and encoded goal frame; horizon/population/iterations configurable *(NOTE: endpoint-only cost made the first action underdetermined → MPC random-walked at 20% success. Switched to dense trajectory cost (sum over all imagined steps + 4× terminal weight) → 97%. Rationale documented in cem.py)*
+- [x] `planning/evaluate.py`: N random (start, goal) episodes → success rate + steps-to-goal; save planning GIFs *(eval_out/<run>/: results.json + GIFs; cross-room GIF visually verified — agent routes through the door)*
+- [x] Build + save the **latent↔state lookup table** and **PCA projection matrix** (from a latent sample) for the browser's decoder-free visualization *(export/latent_maps.py: 2880-state grid → latent_maps.npz; PCA top-2 explains 71.5%)*
+- [x] Sanity-check the lookup/PCA visually (does a latent trajectory map to a sensible path?) *(NN-decode error 0.0063 world units — sub-pixel; PCA scatter shows two room-sheets joined at a doorway neck)*
 
 **Acceptance:**
-- [ ] Planning success rate ≥ 90% on Two Rooms (record exact number)
-- [ ] Collapsed checkpoint plans poorly (contrast documented)
-- [ ] PCA matrix + lookup table exported
+- [x] Planning success rate ≥ 90% on Two Rooms (record exact number) *(97% overall: 94% cross-room, 100% same-room, mean 6.7 steps, N=100, seed 0)*
+- [x] Collapsed checkpoint plans poorly (contrast documented) *(44% at N=50 — mostly lucky wandering; mean steps double at 13.5)*
+- [x] PCA matrix + lookup table exported *(export_out/healthy_v1/latent_maps.npz + meta.json)*
 
 ## Phase 4 — ONNX Export + Parity
 Goal: portable, verified inference artifacts.

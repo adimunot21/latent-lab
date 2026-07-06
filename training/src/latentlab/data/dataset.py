@@ -34,6 +34,28 @@ from torch.utils.data import DataLoader, Dataset
 NORM_STATS_FILENAME = "norm_stats.json"
 
 
+def load_norm_stats(data_dir: Path) -> dict[str, float]:
+    """Load the persisted normalization stats for a dataset dir."""
+    stats_path = Path(data_dir) / NORM_STATS_FILENAME
+    if not stats_path.exists():
+        raise FileNotFoundError(
+            f"{stats_path} not found — instantiate TwoRoomsTransitions once to compute it"
+        )
+    stats: dict[str, float] = json.loads(stats_path.read_text())
+    return stats
+
+
+def normalize_frames(frames: np.ndarray, stats: dict[str, float]) -> torch.Tensor:
+    """uint8 frames (..., H, W) -> normalized float32 (..., 1, H, W).
+
+    THE normalization used everywhere (training, planning eval, browser
+    manifest): (raw / 255 - frame_mean) / frame_std.
+    """
+    x = torch.from_numpy(frames.astype(np.float32)) / 255.0
+    x = (x - stats["frame_mean"]) / stats["frame_std"]
+    return x.unsqueeze(-3)
+
+
 def compute_norm_stats(frames: np.ndarray) -> dict[str, float]:
     """Dataset-wide scalar mean/std of frames scaled to [0, 1]."""
     scaled_mean = float(frames.mean()) / 255.0

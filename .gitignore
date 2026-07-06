@@ -34,6 +34,8 @@ runs/
 tensorboard/
 wandb/
 scratch/
+eval_out/
+export_out/
 
 # ---- Secrets / env ----
 .env
