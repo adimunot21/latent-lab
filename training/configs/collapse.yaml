@@ -1,0 +1,10 @@
+# DELIBERATE COLLAPSE run: lambda_reg = 0 removes the only anti-collapse
+# force (no EMA, no stop-gradient in this architecture), so the encoder
+# converges to a near-constant embedding. These checkpoints are a demo
+# deliverable — the Phase 6 UI hot-swaps them to show collapse live.
+run_name: collapse_v1
+lambda_reg: 0.0
+epochs: 15
+# Dense early checkpoints: collapse happens fast and we want the progression.
+checkpoint_epochs: [1, 2, 5]
+seed: 0

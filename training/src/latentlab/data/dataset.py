@@ -46,7 +46,13 @@ def compute_norm_stats(frames: np.ndarray) -> dict[str, float]:
 class TwoRoomsTransitions(Dataset[dict[str, torch.Tensor]]):
     """All (frame_t, action_t, frame_{t+1}) transitions from a dataset dir."""
 
-    def __init__(self, data_dir: Path, normalize: bool = True) -> None:
+    def __init__(
+        self,
+        data_dir: Path,
+        normalize: bool = True,
+        episode_range: tuple[int, int] | None = None,
+    ) -> None:
+        """episode_range: half-open [start, end) episode slice (train/eval split)."""
         self.data_dir = Path(data_dir)
         meta_path = self.data_dir / "meta.json"
         if not meta_path.exists():
@@ -69,6 +75,15 @@ class TwoRoomsTransitions(Dataset[dict[str, torch.Tensor]]):
         self.frames: npt.NDArray[np.uint8] = np.concatenate(frames_parts)  # (E, T+1, H, W)
         self.states: npt.NDArray[np.float32] = np.concatenate(states_parts)  # (E, T+1, 2)
         self.actions: npt.NDArray[np.float32] = np.concatenate(actions_parts)  # (E, T, 2)
+        if episode_range is not None:
+            start, end = episode_range
+            if not 0 <= start < end <= self.frames.shape[0]:
+                raise ValueError(
+                    f"episode_range {episode_range} out of bounds for {self.frames.shape[0]} episodes"
+                )
+            self.frames = self.frames[start:end]
+            self.states = self.states[start:end]
+            self.actions = self.actions[start:end]
         self.episode_len = int(self.actions.shape[1])
 
         # Load or compute+persist normalization stats (train-time convenience;
@@ -107,10 +122,11 @@ def make_dataloader(
     batch_size: int,
     shuffle: bool = True,
     num_workers: int = 2,
+    episode_range: tuple[int, int] | None = None,
 ) -> DataLoader[dict[str, torch.Tensor]]:
     """DataLoader over all transitions. pin_memory speeds host->GPU copies."""
     return DataLoader(
-        TwoRoomsTransitions(data_dir),
+        TwoRoomsTransitions(data_dir, episode_range=episode_range),
         batch_size=batch_size,
         shuffle=shuffle,
         num_workers=num_workers,

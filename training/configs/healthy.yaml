@@ -1,0 +1,8 @@
+# Healthy JEPA world model: prediction MSE + SIGReg anti-collapse.
+run_name: healthy_v1
+lambda_reg: 1.0
+epochs: 15
+# Early/late checkpoints double as demo assets for the collapse-switcher UI
+# (Phase 6): "healthy early" vs "healthy late".
+checkpoint_epochs: [1, 5]
+seed: 0

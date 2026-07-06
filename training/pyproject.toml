@@ -92,6 +92,12 @@ files = ["src"]
 module = ["torch.*", "onnx.*", "onnxruntime.*", "tensorboard.*"]
 ignore_missing_imports = true
 
+[[tool.mypy.overrides]]
+# train.py calls untyped upstream APIs (SummaryWriter, GradScaler.backward);
+# suppress only the untyped-call noise there, keep everything else strict.
+module = ["latentlab.train"]
+disable_error_code = ["no-untyped-call"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-ra"
